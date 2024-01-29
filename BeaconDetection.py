@@ -6,7 +6,6 @@ import threading
 # for scanning for BLE devices
 from gattlib import DiscoveryService
 
-PATIENT_MAC_ADDRESSES = ["D7:DA:5D:26:87:08", "E2:CB:C3:5C:C1:9A", "D8:F1:CA:B2:7A:04"]
 
 # MAC address to patient mapping
 mac_address_to_patient = {
@@ -47,19 +46,6 @@ def scan( str, str1 ):
 
     return False
 
-
-# setting each device to false at first, if it is found in scan, will be turned to true
-AllDev = True
-dev1 = False
-dev2 = False
-dev3 = False
-
-
-# setting a counter for each device
-count1 = 0
-count2 = 0
-count3 = 0
-count4 = 0
 
 # setting each device to their address Ex: "0C:F3:EE:0D:79:5B"
 beacon1 = "D7:DA:5D:26:87:08"
@@ -116,7 +102,7 @@ def run_anomaly_sim():
 run_anomaly_sim()
 
 # main file
-while AllDev == True:
+while True:
 
     # patient 1 block
 
@@ -137,7 +123,7 @@ while AllDev == True:
 
         except requests.RequestException as e:
             print(f"Error sending message: {e}")
-        count1 = 0
+        
     if dev1 == False:
         print("Not Found\n")
         # Send POST request to the server
@@ -154,10 +140,6 @@ while AllDev == True:
 
         except requests.RequestException as e:
             print(f"Error sending message: {e}")
-        count1 += 1
-    if count1 == 3:
-        print("Sending Alert\n")
-
 
 
     # patient 2 block
@@ -179,7 +161,7 @@ while AllDev == True:
 
         except requests.RequestException as e:
             print(f"Error sending message: {e}")
-        count2 = 0
+        
     if dev2 == False:
         print("Not Found\n")
         # Send POST request to the server
@@ -196,9 +178,6 @@ while AllDev == True:
 
         except requests.RequestException as e:
             print(f"Error sending message: {e}")
-        count2 += 1
-    if count2 == 3:
-        print("Sending Alert\n")
 
     # patient 3 block
 
@@ -219,7 +198,7 @@ while AllDev == True:
 
         except requests.RequestException as e:
             print(f"Error sending message: {e}")
-        count3 = 0
+        
     if dev3 == False:
        print("Not Found\n")
        # Send POST request to the server
@@ -236,10 +215,5 @@ while AllDev == True:
 
        except requests.RequestException as e:
            print(f"Error sending message: {e}")
-
-       count3 += 1
-
-    if count3 == 3:
-        print("Sending Alert\n")
 
 
