@@ -94,7 +94,6 @@ app.post('/api/update_location', async (req, res) => {
             console.log(`Current status: ${currentStatus.status}`)
             if (foundStatus) {
                 console.log(`Patient ${patient} latest known location wan in  ${foundStatus.location} at ${foundStatus.timestamp}.`);
-                // Perform further actions or logging here
             }
         }
 
@@ -166,33 +165,6 @@ app.post('/api/update_anomaly', async (req, res) => {
         timestamp,
     });
 
-    /*switch (anomaly_type) {
-        case 'temperature':
-            if (value > 38.0) {
-                const alertMessage = `High temperature alert for ${patient}: ${value}`;
-                res.json(alertMessage)
-                // Implement actions for high temperature alert (e.g., send notification)
-            }
-            break;
-        case 'bpm':
-            if (value < 60 || value > 100) {
-                const alertMessage = `Abnormal BPM alert for ${mac_address}: ${value}`;
-                res.json(alertMessage)
-                // Implement actions for abnormal BPM alert (e.g., send notification)
-            }
-            break;
-        case 'fall_detection':
-            if (value === true) {
-                const alertMessage = `Fall detected for ${mac_address}`;
-                res.json(alertMessage)
-                // Implement actions for fall detection (e.g., send emergency alert)
-            }
-            break;
-        // Add additional cases for other anomaly types if needed
-    }*/
-
-    // Perform actions based on the type of anomaly (example: send alert, notification, etc.)
-    //handleAnomalyActions(patient, mac_address, anomaly_type, value);
 });
 
 // Function to find the latest "found" status for a patient in any room
@@ -226,7 +198,7 @@ app.get('/api/get_latest_position', async (req, res) => {
     }
 });
 
-// Add this route handler to your existing server-side code
+// API endpoint to retrieve patient data
 app.get('/api/get_patientData', async (req, res) => {
     try {
         const client = new MongoClient(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -247,37 +219,7 @@ app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-
-// Function to handle actions based on the type of anomaly
-function handleAnomalyActions(socket, patient, mac_address, anomaly_type, value) {
-    // Example: Send alert or notification based on anomaly type
-    switch (anomaly_type) {
-        case 'temperature':
-            if (value > 38.0) {
-                const alertMessage = `High temperature alert for ${patient}: ${value}`;
-                socket.send(JSON.stringify({ type: 'anomaly', data: alertMessage }));
-                // Implement actions for high temperature alert (e.g., send notification)
-            }
-            break;
-        case 'bpm':
-            if (value < 60 || value > 100) {
-                const alertMessage =`Abnormal BPM alert for ${mac_address}: ${value}`;
-                socket.send(JSON.stringify({ type: 'anomaly', data: alertMessage }));
-                // Implement actions for abnormal BPM alert (e.g., send notification)
-            }
-            break;
-        case 'fall_detection':
-            if (value === true) {
-                const alertMessage =`Fall detected for ${mac_address}`;
-                socket.send(JSON.stringify({ type: 'anomaly', data: alertMessage }));
-                // Implement actions for fall detection (e.g., send emergency alert)
-            }
-            break;
-        // Add additional cases for other anomaly types if needed
-    }
-}
-
-// Define a function to find the latest anomaly for a given mac_address
+//function to find the latest anomaly for a given mac_address
 async function findLatestAnomaly(db, mac_address) {
     const collection = db.collection('Anomalies');
 
@@ -299,7 +241,7 @@ app.get('/api/get_latest_anomaly', async (req, res) => {
     try {
         const client = new MongoClient(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
         await client.connect();
-        const db = client.db('Patients'); // Replace 'YourDBName' with your actual database name
+        const db = client.db('Patients');
 
         const latestAnomaly = await findLatestAnomaly(db, mac_address);
 
