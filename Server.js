@@ -23,6 +23,13 @@ wss.on('connection', (socket) => {
     console.log('WebSocket connected');
 });
 
+// Create an object to link mac_address to patient
+const macAddressToPatient = {
+    "D7:DA:5D:26:87:08": "Marco",
+    "E2:CB:C3:5C:C1:9A": "Luca",
+    "D8:F1:CA:B2:7A:04": "Francesco"
+};
+
 // Function to send anomaly alert to all connected clients
 function broadcastAnomalyAlert(anomalyData) {
     const payload = JSON.stringify({ type: 'anomaly', data: anomalyData });
@@ -237,16 +244,27 @@ async function findLatestAnomaly(db, mac_address) {
 // Define the API endpoint to retrieve the latest anomaly
 app.get('/api/get_latest_anomaly', async (req, res) => {
     const { mac_address } = req.query;
+    const patient = macAddressToPatient[mac_address];
 
     try {
         const client = new MongoClient(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
         await client.connect();
-        const db = client.db('Patients');
+        const db = client.db('Patients'); // Replace 'YourDBName' with your actual database name
 
         const latestAnomaly = await findLatestAnomaly(db, mac_address);
+        const where = await findLatestKnownLocation(db, patient);
+        const location = where ? where.location : null;
+
+        const data = {
+            patient,
+            location,
+            anomaly_type: latestAnomaly ? latestAnomaly.anomaly_type : null,
+            value: latestAnomaly ? latestAnomaly.value : null,
+            timestamp: latestAnomaly ? latestAnomaly.timestamp : null,
+        };
 
         if (latestAnomaly) {
-            res.json(latestAnomaly);
+            res.json(data);
         } else {
             res.status(404).json({ message: 'No anomalies found for the specified mac_address.' });
         }
