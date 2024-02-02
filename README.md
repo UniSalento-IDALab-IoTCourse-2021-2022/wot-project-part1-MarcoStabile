@@ -1,4 +1,8 @@
-**Neurodegenerative diseases monitoring: Alzheimer**
+**Neurodegenerative Diseases: Patient Monitoring System with Anomaly Detection**
+
+LINKS : 
+https://github.com/UniSalento-IDALab-IoTCourse-2021-2022/wot-project-part2-MarcoStabile
+https://github.com/UniSalento-IDALab-IoTCourse-2021-2022/wot-project-part3-MarcoStabile
 
 This is an Internet of Things (IoT) application designed to monitor and manage patient well-being through a combination of BLE beacon scanning and wearable device anomaly detection.
 Wearable device anomaly detection is not the main focus of this educational project, that is the beacon detection.
