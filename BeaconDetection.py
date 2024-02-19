@@ -89,7 +89,7 @@ def simulate_anomalies():
     except requests.exceptions.RequestException as e:
         print(f"Error sending anomaly: {e}")
 
-    time.sleep(random.randint(5, 10))  # Simulate anomalies occurring every 10 to 15 seconds
+    time.sleep(random.randint(25, 50))  # Simulate anomalies occurring every 25 to 60 seconds
 
 def anomaly():
     while True:
