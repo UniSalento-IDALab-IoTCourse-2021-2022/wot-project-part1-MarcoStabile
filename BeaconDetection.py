@@ -8,6 +8,8 @@ from gattlib import DiscoveryService
 
 SERVER_URL = "http://192.168.1.5:3000"
 
+Room = "Room 1"
+
 # Function to fetch MAC address to patient mapping from the server
 def fetch_mac_address_mapping():
     try:
@@ -91,7 +93,7 @@ def scan_and_send(beacon, patient):
                 # Send POST request to the server
                 try:
                     # Send data to the server
-                    payload = {"mac_address": beacon, "location": "Room 1", "patient": patient, "status": "found"}
+                    payload = {"mac_address": beacon, "location": Room, "patient": patient, "status": "found"}
                     response = requests.post(SERVER_URL+"/api/update_location", json=payload)
 
                     # Check if the request was successful (status code 200)
@@ -108,7 +110,7 @@ def scan_and_send(beacon, patient):
                 # Send POST request to the server
                 try:
                     # Send data to the server
-                    payload = {"mac_address": beacon, "location": "Room 1", "patient": patient, "status": "not found"}
+                    payload = {"mac_address": beacon, "location": Room, "patient": patient, "status": "not found"}
                     response = requests.post(SERVER_URL + "/api/update_location", json=payload)
 
                     # Check if the request was successful (status code 200)
