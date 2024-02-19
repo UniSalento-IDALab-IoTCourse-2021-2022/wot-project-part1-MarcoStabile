@@ -86,6 +86,17 @@ def run_anomaly_sim():
 
 run_anomaly_sim()
 
+def fetch():
+    while True:
+        fetch_mac_address_mapping()
+        time.sleep(60)
+
+def fetch_mac_address():
+    fetch_thread = threading.Thread(target=fetch)
+    fetch_thread.start()
+   
+fetch_mac_address()
+
 def scan_and_send(beacon, patient):
     dev = scan(beacon, patient)
             if dev == True:
