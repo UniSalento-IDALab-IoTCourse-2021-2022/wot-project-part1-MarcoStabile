@@ -6,31 +6,26 @@ import threading
 # for scanning for BLE devices
 from gattlib import DiscoveryService
 
-
-# MAC address to patient mapping
-mac_address_to_patient = {
-    "D7:DA:5D:26:87:08": "Marco",
-    "E2:CB:C3:5C:C1:9A": "Luca",
-    "D8:F1:CA:B2:7A:04": "Francesco"
-    # Add more mappings as needed
-}
-
 SERVER_URL = "http://192.168.1.5:3000"
 
-message = "hello"
+# Function to fetch MAC address to patient mapping from the server
+def fetch_mac_address_mapping():
+    try:
+        # Replace 'your_server_url' with the actual URL of your server
+        response = requests.get(f"{SERVER_URL}/api/get_mac_address_mapping")
 
-data = {"message": message}
+        if response.status_code == 200:
+            # Assuming the server responds with JSON data
+            return response.json()
+        else:
+            print(f"Error fetching MAC address mapping: {response.status_code}")
+            return {}
+    except Exception as e:
+        print(f"Error fetching MAC address mapping: {str(e)}")
+        return {}
 
-try:
-    response= requests.post(SERVER_URL+"/api/receiveMessage", json=data)
-
-    if response.status_code == 200:
-        print("Message sent succesfully.")
-    else:
-        print("Status code: {response.status_code}")
-
-except requests.RequestException as e:
-    print("Error : {e}")
+# Fetch MAC address to patient mapping
+mac_address_to_patient = fetch_mac_address_mapping()
 
 # SCAN function
 def scan( str, str1 ):
@@ -45,18 +40,6 @@ def scan( str, str1 ):
             return True
 
     return False
-
-
-# setting each device to their address Ex: "0C:F3:EE:0D:79:5B"
-beacon1 = "D7:DA:5D:26:87:08"
-beacon2 = "E2:CB:C3:5C:C1:9A"
-beacon3 = "D8:F1:CA:B2:7A:04"
-beacon4 = "XX:XX:XX:XX:XX:XX"
-
-# naming each device,
-patient1 = "Marco"
-patient2 = "Luca"
-patient3 = "Francesco"
 
 # ANOMALIES SIMULATION
 
@@ -89,7 +72,7 @@ def simulate_anomalies():
     except requests.exceptions.RequestException as e:
         print(f"Error sending anomaly: {e}")
 
-    time.sleep(random.randint(25, 50))  # Simulate anomalies occurring every 25 to 60 seconds
+    time.sleep(random.randint(25, 60))  # Simulate anomalies occurring every 25 to 60 seconds
 
 def anomaly():
     while True:
@@ -101,119 +84,44 @@ def run_anomaly_sim():
 
 run_anomaly_sim()
 
+def scan_and_send(beacon, patient):
+    dev = scan(beacon, patient)
+            if dev == True:
+                print("Found\n")
+                # Send POST request to the server
+                try:
+                    # Send data to the server
+                    payload = {"mac_address": beacon, "location": "Room 1", "patient": patient, "status": "found"}
+                    response = requests.post(SERVER_URL+"/api/update_location", json=payload)
+
+                    # Check if the request was successful (status code 200)
+                    if response.status_code == 200:
+                        print("Location sent successfully.")
+                    else:
+                        print(f"Failed to send message. Status code: {response.status_code}")
+
+                except requests.RequestException as e:
+                    print(f"Error sending message: {e}")
+
+            if dev == False:
+                print("Not Found\n")
+                # Send POST request to the server
+                try:
+                    # Send data to the server
+                    payload = {"mac_address": beacon, "location": "Room 1", "patient": patient, "status": "not found"}
+                    response = requests.post(SERVER_URL + "/api/update_location", json=payload)
+
+                    # Check if the request was successful (status code 200)
+                    if response.status_code == 200:
+                        print("Location sent successfully.")
+                    else:
+                        print(f"Failed to send message. Status code: {response.status_code}")
+
+                except requests.RequestException as e:
+                    print(f"Error sending message: {e}")
+
 # main file
 while True:
-
-    # patient 1 block
-
-    dev1 = scan(beacon1, patient1)
-    if dev1 == True:
-        print("Found\n")
-        # Send POST request to the server
-        try:
-            # Send data to the server
-            payload = {"mac_address": beacon1, "location": "room1", "patient": patient1, "status": "found"}
-            response = requests.post(SERVER_URL+"/api/update_location", json=payload)
-
-            # Check if the request was successful (status code 200)
-            if response.status_code == 200:
-                print("Location sent successfully.")
-            else:
-                print(f"Failed to send message. Status code: {response.status_code}")
-
-        except requests.RequestException as e:
-            print(f"Error sending message: {e}")
-        
-    if dev1 == False:
-        print("Not Found\n")
-        # Send POST request to the server
-        try:
-            # Send data to the server
-            payload = {"mac_address": beacon1, "location": "room1", "patient": patient1, "status": "not found"}
-            response = requests.post(SERVER_URL + "/api/update_location", json=payload)
-
-            # Check if the request was successful (status code 200)
-            if response.status_code == 200:
-                print("Location sent successfully.")
-            else:
-                print(f"Failed to send message. Status code: {response.status_code}")
-
-        except requests.RequestException as e:
-            print(f"Error sending message: {e}")
-
-
-    # patient 2 block
-
-    dev2 = scan(beacon2, patient2)
-    if dev2 == True:
-        print("Found\n")
-        # Send POST request to the server
-        try:
-            # Send data to the server
-            payload = {"mac_address": beacon2, "location": "room1", "patient": patient2, "status": "found"}
-            response = requests.post(SERVER_URL+"/api/update_location", json=payload)
-
-            # Check if the request was successful (status code 200)
-            if response.status_code == 200:
-                print("Location sent successfully.")
-            else:
-                print(f"Failed to send message. Status code: {response.status_code}")
-
-        except requests.RequestException as e:
-            print(f"Error sending message: {e}")
-        
-    if dev2 == False:
-        print("Not Found\n")
-        # Send POST request to the server
-        try:
-            # Send data to the server
-            payload = {"mac_address": beacon2, "location": "room1", "patient": patient2, "status": "not found"}
-            response = requests.post(SERVER_URL + "/api/update_location", json=payload)
-
-            # Check if the request was successful (status code 200)
-            if response.status_code == 200:
-                print("Location sent successfully.")
-            else:
-                print(f"Failed to send message. Status code: {response.status_code}")
-
-        except requests.RequestException as e:
-            print(f"Error sending message: {e}")
-
-    # patient 3 block
-
-    dev3 = scan(beacon3, patient3)
-    if dev3 == True:
-        print("Found\n")
-        # Send POST request to the server
-        try:
-            # Send data to the server
-            payload = {"mac_address": beacon3, "location": "room1", "patient": patient3, "status": "found"}
-            response = requests.post(SERVER_URL+"/api/update_location", json=payload)
-
-            # Check if the request was successful (status code 200)
-            if response.status_code == 200:
-                print("Location sent successfully.")
-            else:
-                print(f"Failed to send message. Status code: {response.status_code}")
-
-        except requests.RequestException as e:
-            print(f"Error sending message: {e}")
-        
-    if dev3 == False:
-       print("Not Found\n")
-       # Send POST request to the server
-       try:
-           # Send data to the server
-           payload = {"mac_address": beacon3, "location": "room1", "patient": patient3, "status": "not found"}
-           response = requests.post(SERVER_URL + "/api/update_location", json=payload)
-
-           # Check if the request was successful (status code 200)
-           if response.status_code == 200:
-               print("Location sent successfully.")
-           else:
-               print(f"Failed to send message. Status code: {response.status_code}")
-
-       except requests.RequestException as e:
-           print(f"Error sending message: {e}")
-
-
+    # Iterate over the MAC address to patient mapping
+    for beacon_mac, patient_name in mac_address_to_patient.items():
+        scan_and_send(beacon_mac, patient_name)
