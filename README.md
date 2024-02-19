@@ -38,9 +38,6 @@ pybluez
 gattlib*
 
 Also check that Bluethooth is working fine. Sudo is needed to obtain permission for scanning.
-The output should look like this:
-
-****ADD IMAGE FROM RASPBERRY TERMINAL****
 
 Once the program is launched, it first of all downloads the list of patient and their respective MAC Address. This allows a dynamic update of the patient list and makes it easier to add a new beacon to be detected. Also the program will run a thread dedicated to anomaly simulation. There are 4 types of anomaly: BPM too high or too low, temperature over 38 degrees and fall detection. 
 
