@@ -88,7 +88,7 @@ run_anomaly_sim()
 
 def fetch():
     while True:
-        fetch_mac_address_mapping()
+        mac_address_to_patient = fetch_mac_address_mapping()
         time.sleep(60)
 
 def fetch_mac_address():
