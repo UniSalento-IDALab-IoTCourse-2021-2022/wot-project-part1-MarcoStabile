@@ -28,6 +28,8 @@ node Server.js
 On Raspberry Pi ensure that the following libraries are installed on the device and then run the following command:
 <img width="218" alt="Screenshot 2024-01-29 alle 23 25 03" src="https://github.com/UniSalento-IDALab-IoTCourse-2021-2022/wot-project-part1-MarcoStabile/assets/105797309/35adb5a8-44d5-4e8e-b0a8-71a53d78cb0f">
 
+Install with sudo apt-install
+
 *libbluetooth-dev
 libboost-python-dev 
 libboost-thread-dev 
@@ -35,7 +37,8 @@ libglib2.0-dev
 python-dev 
 bluez 
 pybluez 
-gattlib*
+
+sudo pip3 install gattlib --break-system-packages*
 
 Also check that Bluethooth is working fine. Sudo is needed to obtain permission for scanning.
 
@@ -44,3 +47,4 @@ Once the program is launched, it first of all downloads the list of patient and 
 Then the python code starts scanning the room and searches the mac addresses fetched from the database. If the device is found a JSON payload is sent to the server to update position, otherwise the device status in that room is "Not found".
 Also when an anomaly is detected a JSON payload is sent to alert the server.
 
+In the repository there are 2 files for Beacon Detection, the only difference is the Room variable. Make sure to change it with the actual room name.
